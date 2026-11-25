@@ -25,6 +25,10 @@ pub fn build(b: *std.Build) void {
     const exe = b.addExecutable(.{ .name = "janus", .root_module = app });
     b.installArtifact(exe);
 
+    const dist = b.step("dist", "Create the standalone release directory");
+    const install_dist = b.addInstallBinFile(exe.getEmittedBin(), "janus");
+    dist.dependOn(&install_dist.step);
+
     const run = b.addRunArtifact(exe);
     run.step.dependOn(b.getInstallStep());
     b.step("run", "Run Janus").dependOn(&run.step);

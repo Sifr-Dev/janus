@@ -16,7 +16,15 @@ Janus is a native terminal built with Cipher. It opens PTY-backed panes directly
 ```sh
 zig build -Dcipher-root=/path/to/Cipher
 zig build test -Dcipher-root=/path/to/Cipher
+zig build dist -Dcipher-root=/path/to/Cipher -Doptimize=ReleaseSafe
 ```
+
+`zig build dist` installs the actual compiled executable at `zig-out/bin/janus`.
+The resulting binary is a standalone application, not a launcher for a separate
+Cipher runtime. On the tested Linux x86_64 host, `ldd` reports only the system C
+loader and libc; Wayland access and a supported GPU or software renderer remain
+runtime platform requirements. The embedded default font and its OFL license are
+compiled into the executable.
 
 The tests exercise a real PTY, pane lifecycle, and focus behavior without a display or multiplexer engine.
 

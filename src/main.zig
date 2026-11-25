@@ -19,6 +19,27 @@ const util = @import("util.zig");
 
 const App = app_mod.App;
 
+fn printHelp() void {
+    const msg =
+        \\janus — native terminal built with Cipher
+        \\  janus [--shell /path/to/shell]
+        \\
+        \\Options:
+        \\  --shell PATH   use PATH instead of $SHELL or /bin/sh
+        \\  --help         show this help
+        \\  --version      show the application version
+        \\
+        \\A Wayland compositor and a supported GPU or software renderer are
+        \\required to run the terminal. No separate Cipher runtime is needed.
+        \\
+    ;
+    _ = std.c.write(1, msg.ptr, msg.len);
+}
+
+fn printVersion() void {
+    _ = std.c.write(1, "janus 0.1.0\n", 12);
+}
+
 pub fn main(init: std.process.Init.Minimal) !void {
     const alloc = std.heap.page_allocator;
 
@@ -27,7 +48,13 @@ pub fn main(init: std.process.Init.Minimal) !void {
     var i: usize = 1;
     while (i < argv.len) : (i += 1) {
         const arg = std.mem.span(argv[i]);
-        if (std.mem.eql(u8, arg, "--shell")) {
+        if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
+            printHelp();
+            return;
+        } else if (std.mem.eql(u8, arg, "--version") or std.mem.eql(u8, arg, "-V")) {
+            printVersion();
+            return;
+        } else if (std.mem.eql(u8, arg, "--shell")) {
             if (i + 1 >= argv.len) {
                 std.debug.print("janus: --shell requires a path\n", .{});
                 std.process.exit(2);
