@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout Cipher
+        uses: actions/checkout@v4
+        with:
+          repository: Sifr-Dev/Cipher
+          path: Cipher
+
+      - name: Install Zig 0.17.1
+        run: |
+          curl -fsSL https://ziglang.org/download/0.17.1/zig-x86_64-linux-0.17.1.tar.xz -o /tmp/zig.tar.xz
+          echo "3581863e3cbcfd0fce0efc682ce7e9e93da96668a977791d356a26d2a7e9b17a  /tmp/zig.tar.xz" | sha256sum -c -
+          tar -xJf /tmp/zig.tar.xz -C /tmp
+          echo "/tmp/zig-x86_64-linux-0.17.1" >> "$GITHUB_PATH"
+
+      - name: Build Janus
+        run: zig build -Dcipher-root=Cipher
+
+      - name: Run application tests
+        run: zig build test -Dcipher-root=Cipher --summary all
+
+      - name: Build release artifact
+        run: zig build -Dcipher-root=Cipher -Doptimize=ReleaseSafe
