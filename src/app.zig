@@ -17,6 +17,10 @@ pub const MAX_QUADS: usize = 65536;
 
 pub const Pane = pane_mod.Pane;
 
+/// Re-export the input translation so tests can drive the production
+/// key-to-PTY path directly (pure translation + `handleKey`).
+pub const input_translation = input_mod;
+
 pub const App = struct {
     alloc: std.mem.Allocator,
     panes: std.ArrayList(Pane) = .empty,

@@ -6,8 +6,12 @@
 //!
 //!   janus [--shell /path/to/shell]
 //!
-//! Shortcuts: Ctrl+T new pane · Ctrl+Tab / Ctrl+Shift+Tab cycle · Ctrl+W close pane
-//! · Ctrl+Shift+C copy · wheel scrollback · drag-select clipboard · paste/file-drop.
+//! Esc belongs to the child: it is forwarded to the PTY so Vim, less, and
+//! readline work. Janus shortcuts are modifier-gated:
+//!   Ctrl+Shift+Q quit · Ctrl+T new pane · Ctrl+W close pane
+//!   Ctrl+Tab / Ctrl+Shift+Tab cycle panes · Ctrl+Shift+C copy
+//!   Ctrl+Shift+V paste (also the `.paste` event) · Ctrl+Shift+End jump to live
+//!   wheel scrollback · drag-select clipboard · paste/file-drop.
 const std = @import("std");
 const term = @import("term");
 
@@ -31,6 +35,16 @@ fn printHelp() void {
         \\
         \\A Wayland compositor and a supported GPU or software renderer are
         \\required to run the terminal. No separate Cipher runtime is needed.
+        \\
+        \\Shortcuts (Esc itself always goes to the shell):
+        \\  Ctrl+Shift+Q       quit Janus
+        \\  Ctrl+T             new pane
+        \\  Ctrl+W             close pane
+        \\  Ctrl+Tab / Ctrl+Shift+Tab   cycle panes
+        \\  Ctrl+Shift+C       copy selection
+        \\  Ctrl+Shift+V       paste
+        \\  Ctrl+Shift+End     jump to live output
+        \\  wheel              scrollback
         \\
     ;
     _ = std.c.write(1, msg.ptr, msg.len);

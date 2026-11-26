@@ -26,7 +26,11 @@ loader and libc; Wayland access and a supported GPU or software renderer remain
 runtime platform requirements. The embedded default font and its OFL license are
 compiled into the executable.
 
-The tests exercise a real PTY, pane lifecycle, and focus behavior without a display or multiplexer engine.
+The tests exercise a real PTY, pane lifecycle, focus behavior, and input
+fidelity without a display or multiplexer engine. `zig build test` runs two
+suites: the application/pane tests and `tests/input_test.zig`, which asserts the
+exact bytes each key produces — including on a real PTY child — so a key that is
+swallowed by the application fails the build.
 
 ## Run
 
@@ -42,6 +46,30 @@ A bounded smoke run can use `CIPHER_MAX_FRAMES=120 CIPHER_FORCE_SOFTWARE=1` on a
 - Pane creation, focus cycling, and closing.
 - Keyboard input, scrollback, clipboard, and file-drop paths in the application code.
 - Embedded default font, no engine process, no framework-managed runtime.
+
+## Keyboard semantics
+
+Esc is a terminal key, not a Janus shortcut. A plain Esc is written to the
+focused child's PTY as `0x1b` (or `CSI 27u` when the child enabled the kitty
+keyboard protocol), so Vim, less, and readline receive the key they expect.
+Janus-level actions are modifier-gated and never shadow a bare terminal key:
+
+| Chord | Action |
+| --- | --- |
+| `Ctrl+Shift+Q` | Quit Janus |
+| `Ctrl+T` | New pane |
+| `Ctrl+W` | Close pane |
+| `Ctrl+Tab` / `Ctrl+Shift+Tab` | Cycle panes |
+| `Ctrl+Shift+C` / `Ctrl+Shift+V` | Copy selection / paste |
+| `Ctrl+Shift+End` | Jump to live output |
+| wheel | Scrollback |
+| drag-select | Copy selection on release |
+
+Previously Esc was consumed by the application: it scrolled to the bottom when
+the viewport was scrolled up, and quit the terminal otherwise, so a child never
+saw the byte. That made Vim and less unusable. `tests/input_test.zig` guards the
+current behavior with both pure translation tests and real-PTY tests that assert
+the exact bytes a child receives.
 
 ## Remaining work
 
