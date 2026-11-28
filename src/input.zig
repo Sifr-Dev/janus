@@ -247,5 +247,6 @@ pub fn onEvent(app: *App, rt: *runtime.Runtime, ev: input.Event) void {
         .paste => |text| handlePasteText(app, text),
         .close => rt.requestQuit(),
         .focus => {},
+        .ime => {},
     }
 }
