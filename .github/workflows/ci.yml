@@ -19,6 +19,7 @@ jobs:
         with:
           repository: Sifr-Dev/Cipher
           path: Cipher
+          ref: fca41d818bc495b22df4149f6a4c1a39b2a1a3c9
 
       - name: Install Zig 0.17.1
         run: |

@@ -2,6 +2,8 @@
 
 Janus is a native terminal built with Cipher. It opens PTY-backed panes directly in the application process; no multiplexer daemon or companion engine is required.
 
+**Pinned Cipher:** `fca41d8` (CI checks out this exact commit).
+
 **Status: 0.1.0 development preview.** Janus is a real application with its own repository, build, tests, and release lifecycle. It is not Nebula. Nebula is the separate multiplexer product; Rex is an external competitor, not part of Janus.
 
 ## Requirements
