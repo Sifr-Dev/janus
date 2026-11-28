@@ -1,0 +1,10 @@
+{
+  "name": "janus",
+  "description": "GPU-native terminal with panes, tabs and themes",
+  "stack": [
+    "zig"
+  ],
+  "status": "active",
+  "primary_language": "Zig",
+  "cipher_version": "pinned via -Dcipher-root"
+}
